@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 /*
@@ -74,14 +74,26 @@ function Form({ generate, guess, onChange, values }) {
   );
 }
 
-function Result() {
+function Result({ result, input }) {
+  const [message, setMessage] = useState("");
+  const [color, setColor] = useState("");
+
+  useEffect(() => {
+    const answer = result === parseInt(input);
+    setMessage(answer ? "You guessed right" : "Try again :(");
+    setColor(answer ? "success" : "danger");
+    if (!result) {
+      setMessage("");
+    }
+  }, [result, input]);
+
   return (
     <div
       className="d-flex flex-column justify-content-between"
       style={{ width: "50%" }}
     >
       {/* <div className="d-flex justify-content-end align-items-end px-2 text-secondary"><p className="h3">00</p></div> */}
-      <div className={`d-flex ${color} justify-content-center mb-5`}>
+      <div className={`d-flex text-${color} justify-content-center mb-5`}>
         <p className="h1">{message}</p>
       </div>
     </div>
@@ -91,13 +103,16 @@ function Result() {
 function App() {
   const [values, setValues] = useState({ random1: 0, random2: 0 });
   const [input, setInput] = useState(0);
+  const [result, setResult] = useState(0);
 
   const generateRandomValues = () => {
     const random1 = Math.floor(Math.random() * 50);
     const random2 = Math.floor(Math.random() * 50);
     setValues({ random1, random2 });
   };
-  const guessTheNumber = () => {};
+  const guessTheNumber = () => {
+    setResult(values.random1 + values.random2);
+  };
 
   return (
     <div className="p-5" style={{ width: "80%" }}>
